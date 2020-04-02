@@ -43,11 +43,10 @@ class _CreditCardFormState extends State<CreditCardForm> {
 
   final MaskedTextController _cardNumberController =
       MaskedTextController(mask: '0000 0000 0000 0000');
-  final TextEditingController _expiryDateController =
+  final MaskedTextController _expiryDateController =
       MaskedTextController(mask: '00/00');
-  final TextEditingController _cardHolderNameController =
-      TextEditingController();
-  final TextEditingController _cvvCodeController =
+  TextEditingController _cardHolderNameController;
+  final MaskedTextController _cvvCodeController =
       MaskedTextController(mask: '0000');
 
   FocusNode cvvFocusNode = FocusNode();
@@ -72,6 +71,11 @@ class _CreditCardFormState extends State<CreditCardForm> {
     super.initState();
 
     createCreditCardModel();
+
+    _cardNumberController.updateText(cardNumber);
+    _expiryDateController.updateText(expiryDate);
+    _cardHolderNameController = TextEditingController(text: cardHolderName);
+    _cvvCodeController.updateText(cvvCode);
 
     onCreditCardModelChange = widget.onCreditCardModelChange;
 
@@ -208,3 +212,4 @@ class _CreditCardFormState extends State<CreditCardForm> {
     );
   }
 }
+
