@@ -319,7 +319,7 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
   /// A [List<String>] represents a range.
   /// i.e. ['51', '55'] represents the range of cards starting with '51' to those starting with '55'
   Map<CardType, Set<List<String>>> cardNumPatterns =
-  <CardType, Set<List<String>>>{
+      <CardType, Set<List<String>>>{
     CardType.visa: <List<String>>{
       <String>['4'],
     },
@@ -340,6 +340,11 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
       <String>['23', '26'],
       <String>['270', '271'],
       <String>['2720'],
+    },
+    CardType.maestro: <List<String>>{
+      <String>['500000', '509999'],
+      <String>['560000', '589999'],
+      <String>['600000', '699999'],
     },
   };
 
@@ -437,7 +442,15 @@ class _CreditCardWidgetState extends State<CreditCardWidget>
         );
         isAmex = false;
         break;
-
+      case CardType.maestro:
+        icon = Image.asset(
+          'icons/maestro.png',
+          height: 48,
+          width: 48,
+          package: 'flutter_credit_card',
+        );
+        isAmex = false;
+        break;
       default:
         icon = Container(
           height: 48,
@@ -601,6 +614,7 @@ class MaskedTextController extends TextEditingController {
 
 enum CardType {
   otherBrand,
+  maestro,
   mastercard,
   visa,
   americanExpress,
