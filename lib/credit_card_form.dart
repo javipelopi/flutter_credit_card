@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_credit_card/flutter_credit_card.dart';
 
-import 'credit_card_model.dart';
+import 'flutter_credit_card.dart';
 
 class CreditCardForm extends StatefulWidget {
   const CreditCardForm({
@@ -37,6 +36,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
   String cvvCode;
   bool isCvvFocused = false;
   Color themeColor;
+  final GlobalKey<FormState> _formKey = GlobalKey();
 
   void Function(CreditCardModel) onCreditCardModelChange;
   CreditCardModel creditCardModel;
@@ -128,6 +128,7 @@ class _CreditCardFormState extends State<CreditCardForm> {
         primaryColorDark: themeColor,
       ),
       child: Form(
+        key: _formKey,
         child: Column(
           children: <Widget>[
             Container(
@@ -139,13 +140,23 @@ class _CreditCardFormState extends State<CreditCardForm> {
                 style: TextStyle(
                   color: widget.textColor,
                 ),
-                decoration: InputDecoration(
+                onEditingComplete: () {
+                  Focus.of(context).unfocus();
+                  _formKey.currentState.validate();
+                },
+                validator: (String cardNumberFinal) {
+                  if (luhnCheck(cardNumberFinal)) {
+                    return 'Invalid card number';
+                  }
+                  return null;
+                },
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Card number',
                   hintText: 'xxxx xxxx xxxx xxxx',
                 ),
                 keyboardType: TextInputType.number,
-                textInputAction: TextInputAction.next,
+                textInputAction: TextInputAction.done,
               ),
             ),
             Container(
@@ -157,12 +168,15 @@ class _CreditCardFormState extends State<CreditCardForm> {
                 style: TextStyle(
                   color: widget.textColor,
                 ),
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: 'Expired Date',
                     hintText: 'MM/YY'),
                 keyboardType: TextInputType.number,
-                textInputAction: TextInputAction.next,
+                onEditingComplete: () {
+                  Focus.of(context).unfocus();
+                },
+                textInputAction: TextInputAction.done,
               ),
             ),
             Container(
@@ -175,11 +189,14 @@ class _CreditCardFormState extends State<CreditCardForm> {
                 style: TextStyle(
                   color: widget.textColor,
                 ),
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'CVV',
                   hintText: 'XXXX',
                 ),
+                onEditingComplete: () {
+                  Focus.of(context).unfocus();
+                },
                 keyboardType: TextInputType.number,
                 textInputAction: TextInputAction.done,
                 onChanged: (String text) {
@@ -198,7 +215,10 @@ class _CreditCardFormState extends State<CreditCardForm> {
                 style: TextStyle(
                   color: widget.textColor,
                 ),
-                decoration: InputDecoration(
+                onEditingComplete: () {
+                  Focus.of(context).unfocus();
+                },
+                decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                   labelText: 'Card Holder',
                 ),
